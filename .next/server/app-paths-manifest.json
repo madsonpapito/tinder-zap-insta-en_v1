@@ -1,5 +1,6 @@
 {
-  "/initpage2/page": "app/initpage2/page.js",
-  "/initpage1/page": "app/initpage1/page.js",
-  "/page": "app/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/page": "app/page.js",
+  "/step-2/page": "app/step-2/page.js",
+  "/step-1-v2/page": "app/step-1-v2/page.js"
 }
