@@ -283,9 +283,26 @@ export default function Step2() {
           console.log("[v0] Posts data received:", data)
 
           if (data.success && data.posts && data.posts.length > 0) {
-            const postsToShow = data.posts.slice(0, 9)
+            const postsToShow = data.posts
             console.log("[v0] Setting", postsToShow.length, "posts to display")
             setInstagramPosts(postsToShow)
+
+            // Calculate interval to show all posts within ~20 seconds, capping speed
+            // If there are many posts, show them faster.
+            const totalPosts = postsToShow.length;
+            const animationDuration = 20000; // 20 seconds target
+            const intervalTime = Math.max(200, Math.floor(animationDuration / totalPosts));
+
+            const postsInterval = setInterval(() => {
+              setVisiblePosts((prev) => {
+                if (prev >= totalPosts) {
+                  clearInterval(postsInterval)
+                  return totalPosts
+                }
+                // console.log("[v0] Showing post number:", prev + 1)
+                return prev + 1
+              })
+            }, intervalTime)
           } else {
             console.log("[v0] No posts found in response")
           }
@@ -321,17 +338,6 @@ export default function Step2() {
         return prev + Math.random() * 20
       })
     }, 400)
-
-    const postsInterval = setInterval(() => {
-      setVisiblePosts((prev) => {
-        if (prev >= 9) {
-          clearInterval(postsInterval)
-          return 9
-        }
-        console.log("[v0] Showing post number:", prev + 1)
-        return prev + 1
-      })
-    }, 2800) // Show one post every ~2.8 seconds (9 posts in 25 seconds)
 
     setTimeout(() => {
       setLoadingProgress(100)
@@ -498,31 +504,27 @@ export default function Step2() {
           <p className="font-mono text-xs text-yellow-600 text-center">[STATUS] Searching for connected accounts...</p>
           <div className="grid grid-cols-3 gap-2">
             {instagramPosts.slice(0, visiblePosts).map((post, index) => {
-              const imageUrl = post.imageUrl || "/placeholder.svg?height=200&width=200"
-              console.log("[v0] Rendering post", index, "with image:", imageUrl)
+              // Always use the static lifestyle image
+              const imageUrl = "/instagram-post-lifestyle.png"
 
               return (
                 <div
                   key={post.id || post.pk || index}
                   className="aspect-square rounded-lg overflow-hidden bg-gray-200 animate-fade-in"
                   style={{
-                    animationDelay: `${index * 100}ms`,
+                    animationDelay: `${index * 50}ms`,
                   }}
                 >
                   <img
-                    src={imageUrl || "/placeholder.svg"}
+                    src={imageUrl}
                     alt={`Post ${index + 1}`}
                     className="w-full h-full object-cover"
-                    onError={(e) => {
-                      console.error("[v0] Failed to load image for post", index, "URL:", imageUrl)
-                      e.currentTarget.src = "/instagram-post-lifestyle.png"
-                    }}
                   />
                 </div>
               )
             })}
             {/* Placeholder boxes for posts not yet revealed */}
-            {Array.from({ length: 9 - visiblePosts }).map((_, index) => (
+            {Array.from({ length: Math.max(0, instagramPosts.length - visiblePosts) }).map((_, index) => (
               <div key={`placeholder-${index}`} className="aspect-square rounded-lg bg-gray-300 animate-pulse" />
             ))}
           </div>
@@ -711,7 +713,7 @@ export default function Step2() {
   )
 
   return (
-    <div className="min-h-screen flex flex-col items-center p-4 bg-[rgba(156,79,165,1)]">
+    <div className="min-h-screen flex flex-col items-center p-4 bg-[#171717]">
       <PageHeader />
       <main className="w-full max-w-md bg-white p-6 md:p-8 rounded-2xl shadow-xl">
         <div className="text-center space-y-8">
