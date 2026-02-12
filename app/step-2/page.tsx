@@ -1,200 +1,70 @@
 "use client"
 
 import { useState, useRef, useEffect } from "react"
-import { Input } from "@/components/ui/input"
-import { User, CheckCircle, Heart, MessageCircle, Lock, AlertTriangle, Wifi, Instagram, Whatsapp, Tinder, LockOpen } from "lucide-react"
+import { CheckCircle, AlertTriangle, Lock, LockOpen, Heart, MessageCircle, Info } from "lucide-react"
 import { useFacebookTracking } from "@/hooks/useFacebookTracking"
 
 // ==========================================================
-// DADOS DOS PERFIS E IMAGENS
-// ==========================================================
-// Perfis que interagem com o alvo
-const FEMALE_PROFILES = [
-  "@jessy_nutty",
-  "@alexis_30",
-  "@izes",
-  "@maryjane434",
-  "@emma.whistle32",
-  "@celina_anderson467",
-  "@letty.miriah99",
-]
-const FEMALE_IMAGES = [
-  "/images/male/perfil/1.jpg",
-  "/images/male/perfil/2.jpg",
-  "/images/male/perfil/3.jpg",
-  "/images/male/perfil/4.jpg",
-  "/images/male/perfil/5.jpg",
-  "/images/male/perfil/6.jpg",
-  "/images/male/perfil/7.jpg",
-  "/images/male/perfil/8.jpg",
-  "/images/male/perfil/9.jpg",
-]
-const MALE_PROFILES = [
-  "@john.doe92",
-  "@mike_anderson",
-  "@chris_williams",
-  "@danny.smith",
-  "@liam.baker",
-  "@noah_carter",
-  "@ryan_hills",
-]
-const MALE_IMAGES = [
-  "/images/female/perfil/1.jpg",
-  "/images/female/perfil/2.jpg",
-  "/images/female/perfil/3.jpg",
-  "/images/female/perfil/4.jpg",
-  "/images/female/perfil/5.jpg",
-  "/images/female/perfil/6.jpg",
-  "/images/female/perfil/7.jpg",
-  "/images/female/perfil/8.jpeg",
-  "/images/female/perfil/9.jpg",
-]
-
-// Imagens "interceptadas" (borradas) que o alvo curtiu
-const LIKED_BY_MALE_PHOTOS = [
-  "/images/male/liked/male-liked-photo-1.jpg",
-  "/images/male/liked/male-liked-photo-2.jpeg",
-  "/images/male/liked/male-liked-photo-3.jpeg",
-]
-const LIKED_BY_MALE_STORIES = [
-  "/images/male/liked/male-liked-story-1.jpg",
-  "/images/male/liked/male-liked-story-2.jpg",
-  "/images/male/liked/male-liked-story-3.jpg",
-]
-const LIKED_BY_FEMALE_PHOTOS = [
-  "/images/female/liked/female-liked-photo-1.jpg",
-  "/images/female/liked/female-liked-photo-2.jpg",
-  "/images/female/liked/female-liked-photo-3.jpg",
-]
-const LIKED_BY_FEMALE_STORIES = [
-  "/images/female/liked/female-liked-story-1.jpg",
-  "/images/female/liked/female-liked-story-2.jpg",
-  "/images/female/liked/female-liked-story3.jpg",
-]
-
-// Array de comentários para a seção "INTERCEPTED"
-const INTERCEPTED_COMMENTS = ["Wow, you are very hot 🥰", "🫣😏", "I'm getting horny 🥵", "drives me crazy 😈"]
+// DATA MOCKS (From previous u2m.html)
 // ==========================================================
 
-// --- Funções auxiliares ---
-const sanitizeUsername = (username: string): string => {
-  let u = (username || "").trim()
-  if (u.startsWith("@")) u = u.slice(1)
-  u = u.toLowerCase()
-  return u.replace(/[^a-z0-9._]/g, "")
-}
-const setProfileLocalCache = (user: string, profile: any) => {
-  if (!user || !profile) return
-  try {
-    const key = "igProfileCacheV1"
-    const cache = JSON.parse(localStorage.getItem(key) || "{}") || {}
-    cache[user] = { profile, ts: Date.now() }
-    localStorage.setItem(key, JSON.stringify(cache))
-  } catch (e) {
-    console.error("[v0] Erro ao salvar perfil no cache:", e)
-  }
-}
-const getProfileFromCache = (user: string): any | null => {
-  try {
-    const key = "igProfileCacheV1"
-    const cache = JSON.parse(localStorage.getItem(key) || "{}") || {}
-    if (cache[user] && cache[user].profile) {
-      return cache[user].profile
-    }
-  } catch (e) {
-    console.error("[v0] Erro ao ler o cache do perfil:", e)
-  }
-  return null
-}
+const defaultMatchesData = [
+  { name: "Mila", age: 26, lastSeen: "6h ago", avatar: "/images/male/tinder/5.jpg", verified: true, identity: "Bisexual", distance: "2 km", bio: "Part dreamer, part doer, all about good vibes. Ready to make some memories?", zodiac: "Virgo", mbti: "KU", passion: "Coffee", interests: ["Hiking", "Green Living", "Live Music", "Pottery"] },
+  { name: "John", age: 25, lastSeen: "4h ago", avatar: "/images/female/tinder/5.jpg", verified: true, identity: "Bisexual", distance: "2 km", bio: "Half adrenaline junkie, half cozy blanket enthusiast. What’s your vibe?", zodiac: "Leo", mbti: "BU", passion: "Fitness", interests: ["Meditation", "Books", "Wine", "Music"] },
+  { name: "Harper", age: 21, lastSeen: "3h ago", avatar: "/images/male/tinder/3.jpg", verified: false, identity: "Woman", distance: "5 km", bio: "Just a girl who loves sunsets and long walks on the beach. Looking for someone to share adventures with.", zodiac: "Leo", mbti: "UVA", passion: "Yoga", interests: ["Travel", "Photography", "Podcasts"] },
+  { name: "Will", age: 23, lastSeen: "2h ago", avatar: "/images/female/tinder/3.jpg", verified: true, identity: "Man", distance: "8 km", bio: "Fluent in sarcasm and movie quotes. Let's find the best pizza place in town.", zodiac: "Gemini", mbti: "OHY", passion: "Baking", interests: ["Concerts", "Netflix", "Dogs"] }
+]
 
-const PageHeader = () => (
-  <header className="w-full max-w-md mx-auto text-center px-4 pt-12 pb-8">
-    <div className="inline-block bg-white p-4 rounded-2xl shadow-lg mb-6">
-      {/* 2. Substituí Wifi por Instagram e ajustei a cor para rosa */}
-      <Instagram className="h-10 w-10 text-pink-600" />
-    </div>
-    <h1 className="text-3xl md:text-4xl font-bold text-white mb-3">
-      <span role="img" aria-label="magnifying glass">
-        🔍
-      </span>{" "}
-      Help Us Find What They're Hiding
-    </h1>
-    <p className="text-white">The more details you provide, the deeper we can dig. Everything stays 100% anonymous.</p>
-  </header>
-)
+const femaleMatchesData = [
+  { name: "Elizabeth", age: 24, lastSeen: "1h ago", avatar: "/images/male/tinder/1.jpg", verified: true, identity: "Woman", distance: "3 km", bio: "Seeking new adventures and a great cup of coffee. Let's explore the city together.", zodiac: "Aries", mbti: "ENFP", passion: "Traveling", interests: ["Art", "History", "Podcasts"] },
+  { name: "Victoria", age: 27, lastSeen: "5h ago", avatar: "/images/male/tinder/2.jpg", verified: false, identity: "Woman", distance: "1 km", bio: "Bookworm and aspiring chef. Tell me about the last great book you read.", zodiac: "Taurus", mbti: "ISFJ", passion: "Cooking", interests: ["Reading", "Yoga", "Documentaries"] },
+  { name: "Charlotte", age: 22, lastSeen: "Online", avatar: "/images/male/tinder/3.jpg", verified: true, identity: "Woman", distance: "6 km", bio: "Lover of live music and spontaneous road trips. What's our first destination?", zodiac: "Sagittarius", mbti: "ESFP", passion: "Music", interests: ["Concerts", "Photography", "Hiking"] },
+  { name: "Emily", age: 25, lastSeen: "3h ago", avatar: "/images/male/tinder/4.jpg", verified: true, identity: "Woman", distance: "4 km", bio: "Fitness enthusiast who's equally happy on the couch with a good movie.", zodiac: "Virgo", mbti: "ISTJ", passion: "Fitness", interests: ["Movies", "Healthy Eating", "Dogs"] },
+  { name: "Grace", age: 28, lastSeen: "8h ago", avatar: "/images/male/tinder/5.jpg", verified: false, identity: "Woman", distance: "7 km", bio: "Creative soul with a love for painting and poetry. Looking for meaningful conversations.", zodiac: "Pisces", mbti: "INFP", passion: "Art", interests: ["Museums", "Writing", "Coffee Shops"] },
+  { name: "Olivia", age: 23, lastSeen: "2h ago", avatar: "/images/male/tinder/6.jpg", verified: true, identity: "Woman", distance: "2 km", bio: "Sarcasm is my second language. Let's find the best taco spot in town.", zodiac: "Gemini", mbti: "ENTP", passion: "Comedy", interests: ["Foodie", "Travel", "Stand-up"] }
+]
 
-// --- Componente da Página ---
-export default function Step2() {
+const maleMatchesData = [
+  { name: "William", age: 26, lastSeen: "Online", avatar: "/images/female/tinder/1.jpg", verified: true, identity: "Man", distance: "2 km", bio: "Engineer by day, musician by night. Let's talk about tech and tunes.", zodiac: "Capricorn", mbti: "INTJ", passion: "Guitar", interests: ["Technology", "Live Music", "Brewing"] },
+  { name: "James", age: 29, lastSeen: "4h ago", avatar: "/images/female/tinder/2.jpg", verified: true, identity: "Man", distance: "5 km", bio: "Outdoors enthusiast looking for someone to hike with. My dog will probably like you.", zodiac: "Leo", mbti: "ESTP", passion: "Hiking", interests: ["Camping", "Dogs", "Bonfires"] },
+  { name: "Henry", age: 25, lastSeen: "1h ago", avatar: "/images/female/tinder/3.jpg", verified: false, identity: "Man", distance: "3 km", bio: "Film buff and history nerd. Can recommend a movie for any mood.", zodiac: "Cancer", mbti: "INFJ", passion: "Movies", interests: ["History", "Reading", "Chess"] },
+  { name: "Oliver", age: 27, lastSeen: "6h ago", avatar: "/images/female/tinder/4.jpg", verified: true, identity: "Man", distance: "8 km", bio: "Just a guy who enjoys good food, good company, and exploring new places.", zodiac: "Libra", mbti: "ESFJ", passion: "Foodie", interests: ["Travel", "Cooking", "Sports"] },
+  { name: "Thomas", age: 30, lastSeen: "2h ago", avatar: "/images/female/tinder/5.jpg", verified: true, identity: "Man", distance: "4 km", bio: "Trying to find someone who won't steal my fries. Kidding... mostly.", zodiac: "Scorpio", mbti: "ISTP", passion: "Traveling", interests: ["Photography", "Motorcycles", "Gym"] },
+  { name: "Edward", age: 24, lastSeen: "7h ago", avatar: "/images/female/tinder/6.jpg", verified: false, identity: "Man", distance: "6 km", bio: "Fluent in sarcasm and bad jokes. Looking for a partner in crime.", zodiac: "Aquarius", mbti: "ENTP", passion: "Gaming", interests: ["Comedy", "Sci-Fi", "Concerts"] }
+]
+
+const defaultCensoredPhotos = ["/images/censored/photo1.jpg", "/images/censored/photo2.jpg", "/images/censored/photo3.jpg", "/images/censored/photo4.jpg"]
+const femaleCensoredPhotos = ["/images/male/tinder/censored/censored-f-1.jpg", "/images/male/tinder/censored/censored-f-2.jpg", "/images/male/tinder/censored/censored-f-3.jpg", "/images/male/tinder/censored/censored-f-4.jpg"]
+const maleCensoredPhotos = ["/images/female/tinder/censored/censored-h-1.jpg", "/images/female/tinder/censored/censored-h-2.jpg", "/images/female/tinder/censored/censored-h-3.jpg", "/images/female/tinder/censored/censored-h-4.jpg"]
+
+// ==========================================================
+
+export default function DatingScanner() {
   const [step, setStep] = useState(1)
-  const [instagramHandle, setInstagramHandle] = useState("")
   const [selectedGender, setSelectedGender] = useState<string | null>(null)
-  const [profileData, setProfileData] = useState<any>(null)
-  const [profileImageUrl, setProfileImageUrl] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(false)
-  const [error, setError] = useState("")
+  const [imageUploaded, setImageUploaded] = useState(false)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
   const [loadingProgress, setLoadingProgress] = useState(0)
-  const debounceTimer = useRef<NodeJS.Timeout | null>(null)
+  const [location, setLocation] = useState("your city")
   const [timeLeft, setTimeLeft] = useState(5 * 60)
+  const [selectedMatch, setSelectedMatch] = useState<any | null>(null)
 
-  // Hook para Facebook Tracking - envia dados enriquecidos ao dataLayer
   const { trackEvent, trackInitiateCheckout } = useFacebookTracking()
 
-  // Estados para armazenar os resultados sorteados
-  const [randomizedResults, setRandomizedResults] = useState<
-    Array<{ username: string; image: string; type: "like" | "message" }>
-  >([])
-  const [interceptedImages, setInterceptedImages] = useState<Array<{ image: string; comment: string }>>([])
-
-  // State for Instagram posts grid
-  const [instagramPosts, setInstagramPosts] = useState<any[]>([])
-  const [visiblePosts, setVisiblePosts] = useState<number>(0)
-
-  // Função para embaralhar e pegar N itens de um array
-  const shuffleAndPick = (arr: any[], num: number) => {
-    return [...arr].sort(() => 0.5 - Math.random()).slice(0, num)
-  }
-
-  // Lógica para sortear os perfis e imagens quando chegar no passo 3
   useEffect(() => {
-    if (step === 3) {
-      // 1. Sorteia perfis de interação
-      let profilesToUse = FEMALE_PROFILES
-      let imagesToUse = FEMALE_IMAGES
-      if (selectedGender === "female") {
-        profilesToUse = MALE_PROFILES
-        imagesToUse = MALE_IMAGES
-      }
-      const randomUsernames = shuffleAndPick(profilesToUse, 3)
-      const randomImages = shuffleAndPick(imagesToUse, 3)
-      const results = randomUsernames.map((username, index) => ({
-        username,
-        image: randomImages[index % randomImages.length],
-        type: Math.random() > 0.5 ? "like" : "message",
-      }))
-      setRandomizedResults(results)
-
-      // 2. Sorteia 4 imagens "interceptadas" e 4 comentários
-      let allLikedImages = LIKED_BY_MALE_PHOTOS.concat(LIKED_BY_MALE_STORIES)
-      if (selectedGender === "female") {
-        allLikedImages = LIKED_BY_FEMALE_PHOTOS.concat(LIKED_BY_FEMALE_STORIES)
-      }
-
-      const randomLikedImages = shuffleAndPick(allLikedImages, 4)
-      const randomComments = shuffleAndPick(INTERCEPTED_COMMENTS, 4)
-
-      const newInterceptedData = randomLikedImages.map((img, index) => ({
-        image: img,
-        comment: randomComments[index % randomComments.length],
-      }))
-
-      setInterceptedImages(newInterceptedData)
-    }
-  }, [step, selectedGender])
+    // Corrected location fetch
+    fetch("/api/location")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.city) setLocation(data.city)
+      })
+      .catch((err) => console.log("Location fetch error", err))
+  }, [])
 
   useEffect(() => {
     if (step === 3 && timeLeft > 0) {
       const timer = setInterval(() => {
-        setTimeLeft((prevTime) => prevTime - 1)
+        setTimeLeft((prev) => prev - 1)
       }, 1000)
       return () => clearInterval(timer)
     }
@@ -202,474 +72,227 @@ export default function Step2() {
 
   const formatTime = (seconds: number) => {
     if (seconds <= 0) return "00:00"
-    const minutes = Math.floor(seconds / 60)
-    const remainingSeconds = seconds % 60
-    return `${minutes.toString().padStart(2, "0")}:${remainingSeconds.toString().padStart(2, "0")}`
+    const m = Math.floor(seconds / 60).toString().padStart(2, "0")
+    const s = (seconds % 60).toString().padStart(2, "0")
+    return `${m}:${s}`
   }
 
-  const handleInstagramChange = (value: string) => {
-    setInstagramHandle(value)
-    const sanitizedUser = sanitizeUsername(value)
-    if (debounceTimer.current) clearTimeout(debounceTimer.current)
-    setError("")
-    setProfileData(null)
-    setProfileImageUrl(null)
-
-    if (sanitizedUser.length < 3) {
-      setIsLoading(false)
-      return
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const reader = new FileReader()
+      reader.onload = (ev) => {
+        setImagePreview(ev.target?.result as string)
+        setImageUploaded(true)
+      }
+      reader.readAsDataURL(e.target.files[0])
     }
-
-    setIsLoading(true)
-    debounceTimer.current = setTimeout(async () => {
-      // 1. Checa Cache
-      const cachedProfile = getProfileFromCache(sanitizedUser)
-      if (cachedProfile) {
-        setProfileData(cachedProfile)
-        // CORREÇÃO AQUI: Usar a URL direto, pois ela já vem com o proxy do backend
-        setProfileImageUrl(cachedProfile.profile_pic_url)
-        setIsLoading(false)
-        return
-      }
-
-      // 2. Busca API
-      try {
-        const response = await fetch("/api/instagram/profile", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: sanitizedUser }),
-        })
-        const result = await response.json()
-
-        if (!response.ok || !result.success) {
-          throw new Error(result.error || "Perfil não encontrado ou privado.")
-        }
-
-        const profile = result.profile
-        setProfileData(profile)
-        setProfileLocalCache(sanitizedUser, profile)
-
-        // CORREÇÃO AQUI: Não adicionar /api/instagram/image de novo
-        setProfileImageUrl(profile.profile_pic_url)
-      } catch (err: any) {
-        setError(err.message)
-        setProfileData(null)
-      } finally {
-        setIsLoading(false)
-      }
-    }, 1200)
   }
 
-  const handleContinueClick = () => {
-    console.log("[v0] Continue button clicked, fetching posts...")
+  const startInvestigation = () => {
+    setStep(2)
 
-    const fetchPosts = async () => {
-      try {
-        const cleanUsername = sanitizeUsername(instagramHandle)
-        console.log("[v0] Fetching posts for username:", cleanUsername)
-
-        const response = await fetch("/api/instagram/posts", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username: cleanUsername }),
-        })
-
-        console.log("[v0] Posts fetch response status:", response.status)
-
-        if (response.ok) {
-          const data = await response.json()
-          console.log("[v0] Posts data received:", data)
-
-          if (data.success && data.posts && data.posts.length > 0) {
-            const postsToShow = data.posts
-            console.log("[v0] Setting", postsToShow.length, "posts to display")
-            setInstagramPosts(postsToShow)
-
-            // Calculate interval to show all posts within ~20 seconds, capping speed
-            // If there are many posts, show them faster.
-            const totalPosts = postsToShow.length;
-            const animationDuration = 20000; // 20 seconds target
-            const intervalTime = Math.max(200, Math.floor(animationDuration / totalPosts));
-
-            const postsInterval = setInterval(() => {
-              setVisiblePosts((prev) => {
-                if (prev >= totalPosts) {
-                  clearInterval(postsInterval)
-                  return totalPosts
-                }
-                // console.log("[v0] Showing post number:", prev + 1)
-                return prev + 1
-              })
-            }, intervalTime)
-          } else {
-            console.log("[v0] No posts found in response")
-          }
-        } else {
-          console.error("[v0] Failed to fetch posts, status:", response.status)
-        }
-      } catch (error) {
-        console.error("[v0] Error fetching Instagram posts:", error)
-      }
-    }
-
-    fetchPosts()
-
-    // Facebook Tracking: Envia evento com gênero do usuário (inverso do alvo) e dados enriquecidos
-    // Se o alvo é masculino, o usuário provavelmente é feminino e vice-versa
+    // Tracking
     const userGender = selectedGender === 'male' ? 'female' : selectedGender === 'female' ? 'male' : undefined;
     trackEvent('ViewContent', { gender: userGender }, {
-      content_name: 'Instagram Analysis Started',
+      content_name: 'Dating Analysis Started',
       content_category: 'Engagement',
       target_gender: selectedGender,
     });
 
-    setStep(2)
-    setLoadingProgress(0)
-    setVisiblePosts(0)
-
+    // Simulate Loading
     const interval = setInterval(() => {
       setLoadingProgress((prev) => {
-        if (prev >= 90) {
+        if (prev >= 100) {
           clearInterval(interval)
-          return prev
+          return 100
         }
-        return prev + Math.random() * 20
+        return prev + Math.random() * 15
       })
-    }, 400)
+    }, 500)
 
     setTimeout(() => {
-      setLoadingProgress(100)
-      setTimeout(() => {
-        setStep(3)
-      }, 1000)
-    }, 25000) // Changed from 4000 to 25000 (25 seconds)
+      setStep(3)
+    }, 4000)
   }
 
-  useEffect(
-    () => () => {
-      if (debounceTimer.current) clearTimeout(debounceTimer.current)
-    },
-    [],
-  )
+  const getActiveData = () => {
+    if (selectedGender === 'male') return { matches: femaleMatchesData, photos: femaleCensoredPhotos }
+    if (selectedGender === 'female') return { matches: maleMatchesData, photos: maleCensoredPhotos }
+    return { matches: defaultMatchesData, photos: defaultCensoredPhotos }
+  }
 
-  const renderProfileCard = (profile: any) => (
-    <div
-      className="p-4 rounded-lg border-2 border-green-500/50 text-white animate-fade-in relative overflow-hidden"
-      style={{
-        backgroundColor: "rgba(26, 44, 36, 0.9)",
-        backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)",
-        backgroundSize: "15px 15px",
-      }}
-    >
-      <div className="flex items-start justify-between">
-        <div className="flex items-center gap-4 text-left">
-          {profileImageUrl ? (
-            <img
-              src={profileImageUrl || "/placeholder.svg"}
-              alt="profile"
-              className="w-14 h-14 rounded-full object-cover filter grayscale"
-            />
+  const { matches, photos } = getActiveData()
+
+  // --------------------------------------------------------
+  // RENDER STEP 1: INPUT
+  // --------------------------------------------------------
+  const renderInputStep = () => (
+    <div className="space-y-6 animate-fade-in w-full text-center">
+      <p className="text-lg text-gray-800 pt-2">
+        <span className="font-bold text-red-600">ATTENTION!</span> Our system has identified that this user is registered on dating apps. Use our image scanner to verify.
+      </p>
+
+      {/* Upload Box */}
+      <div className="bg-white rounded-2xl shadow-lg p-6">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">Upload Their Photo for Facial Recognition</h2>
+        <label className="w-40 h-40 mx-auto flex items-center justify-center border-2 border-dashed border-blue-400 rounded-xl cursor-pointer hover:bg-blue-50 transition-colors relative overflow-hidden">
+          <input type="file" accept="image/*" className="hidden" onChange={handleImageChange} />
+          {imagePreview ? (
+            <img src={imagePreview} className="w-full h-full object-cover absolute" />
           ) : (
-            <div className="w-14 h-14 rounded-full bg-gray-700 animate-pulse"></div>
+            <div className="text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /><circle cx="12" cy="13" r="3" /></svg>
+            </div>
           )}
-          <div>
-            <p className="text-green-400 font-bold text-sm">Instagram Profile Detected</p>
-            <p className="font-bold text-lg text-white">@{profile.username}</p>
-            <p className="text-gray-400 text-sm">
-              {profile.media_count} posts • {profile.follower_count} followers
-            </p>
-          </div>
-        </div>
-        <div className="w-7 h-7 rounded-full border-2 border-green-400 flex items-center justify-center flex-shrink-0">
-          <svg className="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20">
-            <path
-              fillRule="evenodd"
-              d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </div>
-      </div>
-      {profile.biography && (
-        <div className="border-t border-green-500/20 mt-3 pt-3 text-left">
-          <p className="text-gray-300 text-sm">{profile.biography}</p>
-        </div>
-      )}
-    </div>
-  )
-
-  const renderInitialStep = () => (
-    <>
-      <div className="w-full text-left space-y-3">
-        <h3 className="text-lg font-semibold text-gray-800">What gender are they?</h3>
-        <div className="grid grid-cols-3 gap-3">
-          <button
-            onClick={() => setSelectedGender("male")}
-            className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center space-y-2 transition-all duration-200 transform hover:scale-105 ${selectedGender === "male" ? "border-indigo-500 bg-indigo-50 shadow-md" : "border-gray-200 bg-white hover:border-gray-300"}`}
-          >
-            <span className="text-3xl">👱‍♂️</span>
-            <span className="font-medium text-sm text-gray-700">Male</span>
-          </button>
-          <button
-            onClick={() => setSelectedGender("female")}
-            className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center space-y-2 transition-all duration-200 transform hover:scale-105 ${selectedGender === "female" ? "border-indigo-500 bg-indigo-50 shadow-md" : "border-gray-200 bg-white hover:border-gray-300"}`}
-          >
-            <span className="text-3xl">👱‍♀️</span>
-            <span className="font-medium text-sm text-gray-700">Female</span>
-          </button>
-          <button
-            onClick={() => setSelectedGender("non-binary")}
-            className={`p-3 rounded-xl border-2 flex flex-col items-center justify-center space-y-2 transition-all duration-200 transform hover:scale-105 ${selectedGender === "non-binary" ? "border-indigo-500 bg-indigo-50 shadow-md" : "border-gray-200 bg-white hover:border-gray-300"}`}
-          >
-            <span className="text-3xl">👱</span>
-            <span className="font-medium text-sm text-gray-700">Non-binary</span>
-          </button>
-        </div>
-      </div>
-      <div className="flex items-center justify-center gap-3">
-        <svg
-          width="28"
-          height="28"
-          viewBox="0 0 24 24"
-          fill="none"
-          xmlns="http://www.w3.org/2000/svg"
-          className="text-pink-500"
-        >
-          <circle cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="1.5" />
-          <circle cx="12" cy="12" r="6" stroke="currentColor" strokeWidth="1.5" />
-          <circle cx="12" cy="12" r="2" fill="currentColor" />
-        </svg>
-        <h1 className="text-2xl font-bold text-black tracking-wide">TARGET IDENTIFICATION</h1>
-      </div>
-      <p className="text-gray-600 !-mt-4 pt-6">Enter the @Instagram username below and perform a quick search.</p>
-      <div className="relative w-full">
-        <User className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" size={20} />
-        <Input
-          type="text"
-          placeholder="username"
-          autoComplete="off"
-          className="w-full bg-white border-2 border-black/20 text-black pl-12 h-14 text-base rounded-lg focus:border-pink-500 focus:ring-pink-500/50 shadow-inner"
-          value={instagramHandle}
-          onChange={(e) => handleInstagramChange(e.target.value)}
-        />
+        </label>
+        <p className="text-sm text-gray-500 mt-4">We'll scan across all dating platforms to find matching profiles - even ones they think are hidden.</p>
       </div>
 
-      <div className="w-full min-h-[140px] bg-muted">
-        {isLoading && (
-          <div className="p-4 bg-pink-50 rounded-lg border-2 border-pink-400 animate-pulse">
-            <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-full bg-pink-200"></div>
-              <div className="flex-1 space-y-2">
-                <div className="h-4 bg-pink-200 rounded w-3/4"></div>
-                <div className="h-3 bg-pink-200 rounded w-1/2"></div>
-              </div>
-            </div>
-          </div>
-        )}
-        {!isLoading && error && <p className="text-red-600 font-semibold">{error}</p>}
-        {!isLoading && profileData && renderProfileCard(profileData)}
-      </div>
-      <button
-        onClick={() => {
-          handleContinueClick()
-        }}
-        disabled={!profileData || isLoading}
-        className="w-full py-4 text-lg font-bold text-white bg-gradient-to-r from-green-500 to-emerald-600 rounded-lg shadow-lg transition-all hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:scale-100"
-      >
-        🔍 Continue Analysis
-      </button>
-    </>
-  )
-
-  const renderLoadingStep = () => (
-    <div className="space-y-6 animate-fade-in">
-      <h2 className="text-2xl font-bold text-black">Analyzing Profile...</h2>
-      {profileData && renderProfileCard(profileData)}
-      <div className="w-full space-y-3">
-        <p className="font-mono text-sm text-gray-700">
-          [SCANNING] Cross-referencing databases... ({Math.floor(loadingProgress)}%)
+      {/* Gender Selector */}
+      <div className="bg-white rounded-2xl shadow-lg p-6">
+        <h2 className="text-xl font-bold text-gray-800 mb-4">What gender are they?</h2>
+        <div className="grid grid-cols-3 gap-4">
+          {['male', 'female', 'non-binary'].map(g => (
+            <button
+              key={g}
+              onClick={() => setSelectedGender(g)}
+              className={`p-4 border rounded-xl transition-all duration-200 ${selectedGender === g ? 'border-blue-500 bg-blue-100 ring-2 ring-blue-300' : 'border-gray-200 hover:border-gray-400'}`}
+            >
+              <span className="text-4xl mb-2 block">{g === 'male' ? '👨🏻' : g === 'female' ? '👩🏻' : '🧑🏻'}</span>
+              <span className="font-semibold text-gray-700 capitalize">{g.replace('-', ' ')}</span>
+            </button>
+          ))}
+        </div>
+        <p className="text-sm text-gray-500 mt-4">
+          This helps us track their device activity and cross-reference with dating app usage patterns.
         </p>
-        <div className="w-full bg-gray-200 rounded-full h-2.5">
-          <div
-            className="bg-gradient-to-r from-pink-500 to-purple-600 h-2.5 rounded-full"
-            style={{ width: `${loadingProgress}%` }}
-          ></div>
-        </div>
       </div>
 
-      {instagramPosts.length > 0 && visiblePosts > 0 && (
-        <div className="w-full space-y-3 animate-fade-in">
-          <p className="font-mono text-xs text-yellow-600 text-center">[STATUS] Searching for connected accounts...</p>
-          <div className="grid grid-cols-3 gap-2">
-            {instagramPosts.slice(0, visiblePosts).map((post, index) => {
-              // Use proxy to avoid CORS/403 issues with Instagram/CDN images
-              const originalUrl = post.imageUrl || ""
-              const imageUrl = originalUrl ? `/api/proxy-image?url=${encodeURIComponent(originalUrl)}` : "/placeholder.svg?height=200&width=200"
-
-              console.log("[v0] Rendering post", index, "original:", originalUrl)
-
-              return (
-                <div
-                  key={post.id || post.pk || index}
-                  className="aspect-square rounded-lg overflow-hidden bg-gray-200 animate-fade-in"
-                  style={{
-                    animationDelay: `${index * 50}ms`,
-                  }}
-                >
-                  <img
-                    src={imageUrl || "/placeholder.svg"}
-                    alt={`Post ${index + 1}`}
-                    className="w-full h-full object-cover"
-                    onError={(e) => {
-                      console.error("[v0] Failed to load image for post", index, "URL:", imageUrl)
-                      e.currentTarget.src = "/placeholder.svg"
-                    }}
-                  />
-                </div>
-              )
-            })}
-            {/* Placeholder boxes for posts not yet revealed */}
-            {Array.from({ length: Math.max(0, instagramPosts.length - visiblePosts) }).map((_, index) => (
-              <div key={`placeholder-${index}`} className="aspect-square rounded-lg bg-gray-300 animate-pulse" />
-            ))}
-          </div>
-        </div>
-      )}
-      {/* Show a message if no posts were fetched */}
-      {instagramPosts.length === 0 && visiblePosts > 0 && (
-        <div className="w-full text-center">
-          <p className="font-mono text-xs text-gray-500">[INFO] Loading posts from Instagram...</p>
-        </div>
-      )}
-      {/* </CHANGE> */}
+      <button
+        onClick={startInvestigation}
+        disabled={!imageUploaded || !selectedGender}
+        className="w-full text-white font-bold py-4 px-6 rounded-xl shadow-lg flex items-center justify-center gap-3 transition-colors disabled:bg-gray-400 disabled:cursor-not-allowed bg-red-600 hover:bg-red-700"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+        <span>START INVESTIGATION - FIND THE TRUTH</span>
+      </button>
     </div>
   )
 
+  // --------------------------------------------------------
+  // RENDER STEP 2: LOADING
+  // --------------------------------------------------------
+  const renderLoadingStep = () => (
+    <div className="text-center animate-fade-in space-y-4 py-10">
+      <div className="mx-auto w-16 h-16 animate-spin text-blue-600">
+        <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 12a9 9 0 1 1-6.219-8.56" /></svg>
+      </div>
+      <h2 className="text-2xl font-bold text-gray-800">Searching...</h2>
+      <p className="text-gray-600">Cross-referencing image with millions of profiles.<br />This may take a moment.</p>
+    </div>
+  )
+
+  // --------------------------------------------------------
+  // RENDER STEP 3: RESULTS
+  // --------------------------------------------------------
   const renderResultsStep = () => (
-    <div className="space-y-6 animate-fade-in">
-      <div className="flex items-center justify-center gap-2 text-green-600 font-bold text-xl">
-        <CheckCircle size={24} /> Analysis Complete
-      </div>
-      {profileData && renderProfileCard(profileData)}
-      {randomizedResults.length > 0 && (
-        <div className="p-3 bg-gray-100 border border-gray-300 rounded-lg font-mono text-sm text-left">
-          <p>
-            <span className="text-green-600 font-bold">[SYSTEM_LOG]</span> New activity detected:
-          </p>
-          <p className="ml-4">
-            <span className="text-blue-600">[INSTAGRAM]</span> {randomizedResults[0].username} liked your photo.
-          </p>
-          <p className="ml-4">
-            <span className="text-blue-600">[INSTAGRAM]</span> New message from{" "}
-            {randomizedResults[1]?.username || randomizedResults[0].username}.
-          </p>
-        </div>
-      )}
-      <div className="space-y-3 text-left">
-        {randomizedResults.length >= 3 && (
-          <>
-            {[0, 1, 2].map((i) => (
-              <div key={i} className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-                <img
-                  src={randomizedResults[i].image || "/placeholder.svg"}
-                  alt="User Avatar"
-                  className="w-10 h-10 rounded-full object-cover"
-                />
-                <div className="flex-1 text-sm">
-                  <p className="text-gray-800">
-                    <span className="font-semibold">{randomizedResults[i].username}</span>{" "}
-                    {i < 2 ? "liked your photo" : "sent you a message"}
-                  </p>
-                  <p className="text-gray-500 text-xs">{[1, 2, 5][i]} minutes ago</p>
-                </div>
-                {i < 2 ? (
-                  <Heart className="text-pink-500" size={20} />
-                ) : (
-                  <MessageCircle className="text-blue-500" size={20} />
-                )}
-              </div>
-            ))}
-          </>
-        )}
-        <div className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-          <img src={profileImageUrl || ""} alt="Target Avatar" className="w-10 h-10 rounded-full object-cover" />
-          <div className="flex-1 text-sm">
-            <p className="text-gray-800">
-              <span className="font-semibold">{instagramHandle}</span> is typing...
-            </p>
-            <p className="text-gray-500 text-xs">Just now</p>
-          </div>
-          <span className="w-2.5 h-2.5 bg-green-500 rounded-full animate-pulse ml-auto"></span>
-        </div>
-        <div className="flex items-center gap-3 p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-          <img src={profileImageUrl || ""} alt="Target Avatar" className="w-10 h-10 rounded-full object-cover" />
-          <div className="flex-1 text-sm">
-            <p className="text-gray-800">
-              <span className="font-semibold">{instagramHandle}</span> sent a new message.
-            </p>
-            <p className="text-gray-500 text-xs">1 minute ago</p>
-          </div>
-          <MessageCircle className="text-blue-500 ml-auto" size={20} />
+    <div className="space-y-4 animate-fade-in w-full text-left">
+
+      {/* Alert Banners */}
+      <div className="bg-red-600 text-white p-3 rounded-lg shadow-lg flex items-center gap-3">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" /></svg>
+        <div>
+          <h1 className="font-bold text-base">PROFILE FOUND - THEY ARE ACTIVE ON TINDER</h1>
+          <p className="text-xs text-red-200">Last seen: <span className="font-semibold">Online now</span></p>
         </div>
       </div>
-      <div className="space-y-5 text-left">
-        <h2 className="text-xl font-bold text-black text-center">
-          <span className="text-red-600">INTERCEPTED:</span> Suspicious Likes from {instagramHandle}
-        </h2>
-        {interceptedImages.map((item, index) => (
-          <div key={index} className="p-3 bg-white border border-gray-200 rounded-lg shadow-sm">
-            <div className="relative w-full h-56 rounded-md overflow-hidden">
-              <img
-                src={item.image || "/placeholder.svg"}
-                alt={`Liked content ${index + 1}`}
-                className="w-full h-full object-cover filter blur-sm"
-              />
-              <div className="absolute inset-0 flex items-center justify-center bg-black/40">
-                <Lock size={40} className="text-white" />
-              </div>
-            </div>
-            <div className="flex items-center gap-2 mt-2">
-              <Heart size={16} className="text-pink-500" />
-              <span className="text-sm text-gray-600">{index % 2 === 0 ? "1.2K" : "876"} likes</span>
-            </div>
-            <div className="flex items-center gap-3 mt-2">
-              <img src={profileImageUrl || ""} alt="User" className="w-8 h-8 rounded-full object-cover" />
-              <p className="text-sm text-gray-800">
-                <b>{instagramHandle}</b> {item.comment}
-              </p>
-            </div>
+
+      <div className="bg-orange-500 text-white p-3 rounded-lg shadow-lg flex items-center gap-3">
+        <AlertTriangle className="w-6 h-6 shrink-0" />
+        <p className="text-sm font-semibold">
+          <span className="font-bold">ATTENTION: ACTIVE PROFILE FOUND!</span> We confirm this number is linked to an ACTIVE Tinder profile. Latest usage records detected in <span className="font-bold">{location}</span>.
+        </p>
+      </div>
+
+      {/* Stats Grid */}
+      <div className="grid grid-cols-4 gap-3 text-center">
+        {[
+          { val: 6, label: "MATCHES (7 DAYS)", color: "text-red-600" },
+          { val: 30, label: "LIKES (7 DAYS)", color: "text-orange-500" },
+          { val: 4, label: "ACTIVE CHATS", color: "text-purple-600" },
+          { val: "18h", label: "LAST ACTIVE", color: "text-gray-800" },
+        ].map((s, i) => (
+          <div key={i} className="bg-white p-3 rounded-lg shadow-md">
+            <p className={`text-2xl font-bold ${s.color}`}>{s.val}</p>
+            <p className="text-[10px] text-gray-500 font-semibold">{s.label}</p>
           </div>
         ))}
       </div>
-      <div className="bg-white p-5 rounded-lg shadow-xl text-center mt-8">
-        <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-cyan-500 flex items-center justify-center mb-4">
-          <LockOpen className="text-white" size={40} />
+
+      {/* Matches List */}
+      <div className="bg-gradient-to-b from-slate-800 to-slate-900 text-white p-5 rounded-lg shadow-2xl">
+        <div className="flex items-center gap-2 mb-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-orange-400"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.1.2-2.2.6-3.3.3.3.5.6.8.9.6.6 2 .9 2.1 2.9z" /></svg>
+          <h2 className="text-lg font-bold">RECENT MATCHES FOUND</h2>
         </div>
-        <h2 className="text-xl font-bold text-gray-800">
-          <span className="text-yellow-600">🔓</span> UNLOCK COMPLETE REPORT
-        </h2>
-        <p className="text-gray-600 mt-1 mb-6">
-          Get instant access to the full report with uncensored photos and complete conversation history.
-        </p>
-        <div className="bg-red-100 border-2 border-red-500 text-red-800 p-4 rounded-lg mt-5">
+        <p className="text-sm text-gray-400 mb-5">Tap on a match to view more information</p>
+        <div className="space-y-4">
+          {matches.map((m, i) => (
+            <div key={i} onClick={() => setSelectedMatch(m)} className="flex items-center gap-4 bg-slate-700/50 p-3 rounded-lg cursor-pointer hover:bg-slate-600 transition-colors">
+              <img src={m.avatar} alt={m.name} className="w-12 h-12 rounded-full object-cover border-2 border-slate-600" onError={(e) => e.currentTarget.src = '/placeholder.svg'} />
+              <div className="flex-grow">
+                <p className="font-bold">{m.name}, {m.age}</p>
+                <p className="text-xs text-gray-400">Last seen: {m.lastSeen}</p>
+                <p className="text-xs font-semibold text-green-400">Active chat: frequently online</p>
+              </div>
+              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Censored Photos Carousel */}
+      <div className="bg-gradient-to-b from-slate-800 to-slate-900 text-white p-5 rounded-lg shadow-2xl relative">
+        <div className="flex items-center gap-2 mb-4">
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-slate-300"><path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z" /><circle cx="12" cy="13" r="3" /></svg>
+          <h2 className="text-lg font-bold">CENSORED PHOTOS</h2>
+        </div>
+        <p className="text-sm text-gray-400 mb-4">See all their profile photos (including the ones you've never seen)</p>
+
+        <div className="flex overflow-x-auto gap-2 scrollbar-hide snap-x">
+          {photos.map((src, i) => (
+            <div key={i} className="relative flex-[0_0_80%] aspect-video bg-gray-700 rounded-lg overflow-hidden snap-center">
+              <img src={src} className="w-full h-full object-cover filter blur-md" onError={(e) => e.currentTarget.src = '/placeholder.svg'} />
+              <div className="absolute inset-0 bg-black/30 flex flex-col items-center justify-center text-white">
+                <Lock className="w-8 h-8" />
+                <span className="font-bold mt-1 text-sm tracking-widest">BLOCKED</span>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Unlock Widget */}
+      <div className="bg-white p-5 rounded-lg shadow-xl text-center">
+        <div className="mx-auto w-16 h-16 rounded-2xl bg-gradient-to-br from-green-400 to-cyan-500 flex items-center justify-center mb-4">
+          <LockOpen className="text-white w-8 h-8" />
+        </div>
+        <h2 className="text-xl font-bold text-gray-800"><span className="text-yellow-600">🔓</span> UNLOCK COMPLETE REPORT</h2>
+        <p className="text-gray-600 mt-1">Get instant access to the full report with all the matches and photos exchanged</p>
+
+        <div className="bg-red-100 border-2 border-red-500 text-red-800 p-4 rounded-lg mt-5 mb-5">
           <div className="flex items-center justify-center gap-2">
-            <AlertTriangle className="text-red-600" />
+            <AlertTriangle className="text-red-600 w-5 h-5" />
             <h3 className="font-bold">THE REPORT WILL BE DELETED IN:</h3>
           </div>
-          <p className="text-4xl font-mono font-bold my-1 text-red-600">{formatTime(timeLeft)}</p>
-          <p className="text-xs text-red-700">
-            After the time expires, this report will be permanently deleted for privacy reasons. This offer cannot be
-            recovered at a later date.
-          </p>
+          <p className="text-4xl font-mono font-bold my-1">{formatTime(timeLeft)}</p>
+          <p className="text-xs text-red-700">After the time expires, this report will be permanently deleted for privacy reasons. This offer cannot be recovered at a later date.</p>
         </div>
 
-        {/* --- MAIN BUTTON AND PRICE --- */}
+        {/* CHECKOUT BUTTON - Retained from original file */}
         <a
           href="https://pay.mycheckoutt.com/0198c1be-98b4-7315-a3bc-8c0fa9120e5c?ref="
           onClick={() => {
-            // Facebook Tracking: Envia evento InitiateCheckout com dados enriquecidos
             const userGender = selectedGender === 'male' ? 'female' : selectedGender === 'female' ? 'male' : undefined;
             trackInitiateCheckout(37, 'USD', { gender: userGender });
           }}
@@ -677,61 +300,73 @@ export default function Step2() {
         >
           🔓 YES, I WANT THE COMPLETE REPORT
         </a>
-        <div className="mt-4 text-center">
-          <p className="text-gray-500">
-            From <span className="line-through">$79</span> for only
-          </p>
-          <p className="text-4xl font-bold text-green-600">$37</p>
-          <p className="text-xs text-gray-400 mt-1">(One-Time Payment)</p>
-        </div>
-
-        {/* --- TRUST & GUARANTEE AREA (All Translated) --- */}
-        <div className="mt-8 border-t pt-6">
-          {/* 1. Social Proof */}
-          <div className="flex items-center justify-center gap-2 text-yellow-500">
-            <span>★★★★★</span>
-            <span className="text-gray-600 font-medium text-sm">4.9/5.0</span>
-          </div>
-          <p className="text-sm text-gray-500 mt-1">Based on 15,783 satisfied customers.</p>
-
-          {/* 2. Guarantee */}
-          <div className="mt-6 flex items-center justify-center gap-3 bg-gray-50 p-3 rounded-lg">
-            <img src="/images/design-mode/guarantee.png" alt="Guarantee Seal" className="h-12 w-12 opacity-70" />
-            <div>
-              <h4 className="font-bold text-gray-800 text-left">7-Day Guarantee</h4>
-              <p className="text-xs text-gray-600 text-left">
-                Your satisfaction or your money back. Zero risk for you.
-              </p>
-            </div>
-          </div>
-
-          {/* 3. Security Seals */}
-          <div className="mt-4">
-            <p className="text-xs text-gray-400 mb-2">100% Secure Checkout</p>
-            <img
-              src="/images/secure-payment-badge2.png"
-              alt="Secure Payment Badges"
-              className="mx-auto h-6 opacity-80"
-            />
-          </div>
-        </div>
       </div>
     </div>
   )
 
-  return (
-    <div className="min-h-screen flex flex-col items-center p-4 bg-[#171717]">
-      <PageHeader />
-      <main className="w-full max-w-md bg-white p-6 md:p-8 rounded-2xl shadow-xl">
-        <div className="text-center space-y-8">
-          {step === 1 && renderInitialStep()}
-          {step === 2 && renderLoadingStep()}
-          {step === 3 && renderResultsStep()}
+  // --------------------------------------------------------
+  // MATCH DETAIL MODAL
+  // --------------------------------------------------------
+  const renderMatchModal = () => {
+    if (!selectedMatch) return null;
+    return (
+      <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4 animate-fade-in" onClick={() => setSelectedMatch(null)}>
+        <div className="bg-white rounded-2xl w-full max-w-sm max-h-[90vh] overflow-y-auto relative" onClick={(e) => e.stopPropagation()}>
+          <button onClick={() => setSelectedMatch(null)} className="absolute top-3 right-3 bg-black/40 hover:bg-black/60 text-white rounded-full p-1.5 z-10">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 6 6 18" /><path d="m6 6 18 18" /></svg>
+          </button>
+          <img src={selectedMatch.avatar} alt="Match" className="w-full h-80 object-cover rounded-t-2xl" />
+          <div className="p-5 text-left">
+            <div className="flex items-center gap-2">
+              <h1 className="text-3xl font-bold text-gray-800">{selectedMatch.name}</h1>
+              {selectedMatch.verified && <CheckCircle className="text-blue-500 w-7 h-7" fill="white" />}
+            </div>
+            <div className="flex flex-col gap-1 text-gray-600 mt-2 text-sm">
+              <div className="flex items-center gap-1.5"><p>{selectedMatch.identity}</p></div>
+              <div className="flex items-center gap-1.5"><p>Lives in {location}</p></div>
+              <div className="flex items-center gap-1.5"><p>📍 {selectedMatch.distance} away</p></div>
+            </div>
+            <div className="mt-6">
+              <h2 className="font-bold text-gray-800">About Me</h2>
+              <p className="text-gray-600 mt-1">{selectedMatch.bio}</p>
+            </div>
+            <div className="flex flex-wrap gap-2 mt-4 text-sm">
+              {[selectedMatch.zodiac, selectedMatch.mbti, selectedMatch.passion].map((tag, i) => (
+                <span key={i} className="bg-gray-100 text-gray-700 px-3 py-1 rounded-full">{tag}</span>
+              ))}
+            </div>
+            <div className="mt-6">
+              <h2 className="font-bold text-gray-800">My Interests</h2>
+              <div className="flex flex-wrap gap-2 mt-2 text-sm">
+                {selectedMatch.interests.map((int: string, i: number) => (
+                  <span key={i} className="border border-gray-300 text-gray-700 px-3 py-1 rounded-full">{int}</span>
+                ))}
+              </div>
+            </div>
+          </div>
+          <div className="sticky bottom-0 grid grid-cols-2 gap-4 bg-white p-4 border-t border-gray-200">
+            <button onClick={() => setSelectedMatch(null)} className="bg-gray-200 text-gray-800 font-bold py-3 rounded-full hover:bg-gray-300 transition-colors">Pass</button>
+            <button className="bg-gradient-to-r from-pink-500 to-red-500 text-white font-bold py-3 rounded-full hover:opacity-90 transition-opacity">Like</button>
+          </div>
         </div>
+      </div>
+    )
+  }
+
+  // --------------------------------------------------------
+  // MAIN RENDER
+  // --------------------------------------------------------
+  return (
+    <div className="min-h-screen flex flex-col items-center p-4 bg-gray-100">
+      <main className="w-full max-w-md mx-auto">
+        {step === 1 && renderInputStep()}
+        {step === 2 && renderLoadingStep()}
+        {step === 3 && renderResultsStep()}
       </main>
       <footer className="py-4 mt-4">
-        <p className="text-xs text-white">© 2024. All rights reserved.</p>
+        <p className="text-xs text-gray-500">© 2024. All rights reserved.</p>
       </footer>
+      {renderMatchModal()}
     </div>
   )
 }

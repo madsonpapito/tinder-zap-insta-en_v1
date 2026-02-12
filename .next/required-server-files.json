@@ -96,7 +96,7 @@
         "transform": "lodash/{{member}}"
       }
     },
-    "outputFileTracingRoot": "C:\\Users\\madso\\insta-zap-tinder4-main (infidelityfind)",
+    "outputFileTracingRoot": "C:\\Users\\madso\\tinder-insta-zap (ingles)",
     "experimental": {
       "allowedDevOrigins": [],
       "nodeMiddleware": false,
@@ -175,7 +175,7 @@
       "forceSwcTransforms": false,
       "largePageDataBytes": 128000,
       "turbo": {
-        "root": "C:\\Users\\madso\\insta-zap-tinder4-main (infidelityfind)"
+        "root": "C:\\Users\\madso\\tinder-insta-zap (ingles)"
       },
       "typedRoutes": false,
       "typedEnv": false,
@@ -281,7 +281,7 @@
     "bundlePagesRouterDependencies": false,
     "configFileName": "next.config.mjs"
   },
-  "appDir": "C:\\Users\\madso\\insta-zap-tinder4-main (infidelityfind)",
+  "appDir": "C:\\Users\\madso\\tinder-insta-zap (ingles)",
   "relativeAppDir": "",
   "files": [
     ".next\\routes-manifest.json",

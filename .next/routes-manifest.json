@@ -116,6 +116,12 @@
       "regex": "^/u2(?:/)?$",
       "routeKeys": {},
       "namedRegex": "^/u2(?:/)?$"
+    },
+    {
+      "page": "/u3",
+      "regex": "^/u3(?:/)?$",
+      "routeKeys": {},
+      "namedRegex": "^/u3(?:/)?$"
     }
   ],
   "dataRoutes": [],
