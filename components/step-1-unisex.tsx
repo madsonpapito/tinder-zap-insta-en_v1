@@ -257,7 +257,7 @@ export default function Step1Unisex() {
                                 </div>
                             </div>
                             <blockquote className="text-gray-600 italic mb-4">
-                                &quot;Honestly? I was hoping to prove myself wrong. The scan came back clean. No hidden profiles. No dating apps. Now I can actually trust him without that voice in my head. Best $47 I ever spent.&quot;
+                                &quot;Honestly? I was hoping to prove myself wrong. The scan came back clean. No hidden profiles. No dating apps. Now I can actually trust him without that voice in my head. It was a relief.&quot;
                             </blockquote>
                             <StarRating />
                         </div>
