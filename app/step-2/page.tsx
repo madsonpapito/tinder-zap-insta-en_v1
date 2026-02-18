@@ -803,6 +803,45 @@ function DatingScannerContent() {
           </div>
         </div>
 
+        {/* SUSPICIOUS LOCATIONS */}
+        <div className="bg-[#0f172a] rounded-xl border border-slate-700/50 overflow-hidden shadow-lg animate-fade-in delay-200">
+          <div className="bg-slate-800/50 p-3 border-b border-slate-700 flex justify-between items-center group">
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4 text-rose-500 group-hover:text-rose-400 transition-colors" />
+              <h3 className="text-xs font-bold text-white uppercase tracking-widest">Suspicious Locations</h3>
+            </div>
+          </div>
+
+          <div className="p-4 space-y-4">
+            <div className="bg-rose-500/10 border border-rose-500/20 p-3 rounded-lg text-xs leading-relaxed text-slate-300">
+              <span className="font-bold text-rose-400">3 suspicious activities</span> detected near: <span className="font-bold text-white">{location}</span>
+            </div>
+
+            <div className="relative w-full h-40 bg-slate-900 rounded-lg overflow-hidden border border-slate-800 group cursor-pointer" onClick={scrollToCheckout}>
+              {/* Map Grid Pattern */}
+              <div className="absolute inset-0 opacity-20" style={{ backgroundImage: 'radial-gradient(#334155 1px, transparent 1px)', backgroundSize: '20px 20px' }}></div>
+
+              {/* Radar Effect */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-32 h-32 bg-rose-500/5 rounded-full animate-ping"></div>
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-20 h-20 bg-rose-500/10 rounded-full animate-pulse"></div>
+
+              {/* Pin */}
+              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2">
+                <div className="relative">
+                  <MapPin className="w-8 h-8 text-rose-500 drop-shadow-[0_0_10px_rgba(244,63,94,0.5)]" />
+                  <div className="w-2 h-1 bg-black/50 blur-[1px] absolute -bottom-0.5 left-3 rounded-full"></div>
+                </div>
+              </div>
+
+              {/* Map UI Overlay */}
+              <div className="absolute bottom-2 right-2 bg-slate-900/90 border border-slate-700 px-2 py-1 rounded flex items-center gap-1">
+                <span className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></span>
+                <span className="text-[8px] text-slate-400 font-bold uppercase">Live Tracking</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Censored Photos */}
         <div className="bg-[#0f172a] rounded-xl border border-slate-700 p-4 space-y-3 relative overflow-hidden group">
           <div className="flex items-center justify-between">
@@ -834,24 +873,24 @@ function DatingScannerContent() {
           </div>
 
           <h2 className="text-xl font-black text-white uppercase tracking-wide mb-2">UNLOCK FULL DOSSIER</h2>
-          <p className="text-xs text-slate-400 mb-6 px-4">Instant access to 6 Matches, Photos, and Chat Logs.</p>
+          <p className="text-xs text-slate-400 mb-6 px-4">Get instant access to the full report with all the matches and photos exchanged
 
-          <div className="bg-slate-900 border border-slate-800 p-3 rounded-lg mb-6 flex justify-between items-center max-w-[200px] mx-auto">
-            <span className="text-[10px] text-slate-500 uppercase font-bold">Expires:</span>
-            <span className="font-mono font-bold text-rose-500 text-lg">{formatTime(timeLeft)}</span>
-          </div>
+            <div className="bg-slate-900 border border-slate-800 p-3 rounded-lg mb-6 flex justify-between items-center max-w-[200px] mx-auto">
+              <span className="text-[10px] text-slate-500 uppercase font-bold">Expires:</span>
+              <span className="font-mono font-bold text-rose-500 text-lg">{formatTime(timeLeft)}</span>
+            </div>
 
-          <a
-            href="https://pay.mycheckoutt.com/0198c1be-98b4-7315-a3bc-8c0fa9120e5c?ref="
-            onClick={() => {
-              const userGender = selectedGender === 'male' ? 'female' : selectedGender === 'female' ? 'male' : undefined;
-            }}
-            className="block w-full bg-emerald-500 hover:bg-emerald-400 text-[#0B1120] font-bold py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] uppercase tracking-widest text-sm"
-          >
-            UNLOCK REPORT NOW
-          </a>
+            <a
+              href="https://pay.mycheckoutt.com/0198c1be-98b4-7315-a3bc-8c0fa9120e5c?ref="
+              onClick={() => {
+                const userGender = selectedGender === 'male' ? 'female' : selectedGender === 'female' ? 'male' : undefined;
+              }}
+              className="block w-full bg-emerald-500 hover:bg-emerald-400 text-[#0B1120] font-bold py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] uppercase tracking-widest text-sm"
+            >
+              UNLOCK REPORT NOW
+            </a>
 
-          <p className="text-[10px] text-slate-600 mt-4 font-mono">Secure Payment • 256-bit SSL</p>
+            <p className="text-[10px] text-slate-600 mt-4 font-mono">Secure Payment • 256-bit SSL</p>
         </div>
 
         {/* Testimonial */}
