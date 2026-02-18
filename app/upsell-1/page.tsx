@@ -135,15 +135,31 @@ export default function Upsell1Page() {
   const [modalData, setModalData] = useState<typeof CONVERSATIONS[0] | null>(null);
 
   // Fetch user location
+  // Fetch user location
   useEffect(() => {
-    fetch("/api/location")
+    // 1. Try internal Vercel headers first
+    fetch('/api/geo')
       .then(r => r.json())
       .then(d => {
-        if (d.city) setUserLocation(d.city);
-        if (d.lat) setUserLat(d.lat);
-        if (d.lon) setUserLon(d.lon);
+        if (d.city && d.city !== 'Unknown Location') {
+          setUserLocation(d.city);
+          // If Vercel headers provide more info in the future, we can use it.
+          // For now, relies on City name for map query.
+        } else {
+          throw new Error("Vercel Geo failed or unknown");
+        }
       })
-      .catch(() => { });
+      .catch(() => {
+        // 2. Fallback to IP-based Geo
+        fetch('https://get.geojs.io/v1/ip/geo.json')
+          .then(r => r.json())
+          .then(d => {
+            if (d.city) setUserLocation(d.city);
+            if (d.latitude) setUserLat(parseFloat(d.latitude));
+            if (d.longitude) setUserLon(parseFloat(d.longitude));
+          })
+          .catch(e => console.error("Geo fallback error:", e));
+      });
   }, []);
 
   // Close dropdown on outside click
