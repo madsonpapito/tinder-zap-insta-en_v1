@@ -894,7 +894,7 @@ function DatingScannerContent() {
           </div>
 
           <h2 className="text-xl font-black text-white uppercase tracking-wide mb-2">UNLOCK FULL DOSSIER</h2>
-          <p className="text-xs text-slate-400 mb-6 px-4">Get instant access to the full report with all the matches and photos exchanged</p>
+          <p className="text-xs text-slate-400 mb-6 px-4">Get instant access to the full report with all chats, conversations, audio, videos, and photos exchanged</p>
 
           <div className="bg-slate-900 border border-slate-800 p-3 rounded-lg mb-6 flex justify-between items-center max-w-[200px] mx-auto">
             <span className="text-[10px] text-slate-500 uppercase font-bold">Expires:</span>
