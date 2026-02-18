@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, useRef, useEffect, useCallback } from "react"
+import { useState, useRef, useEffect, useCallback, Suspense } from "react"
 import { useSearchParams } from "next/navigation"
 import {
   CheckCircle2, AlertTriangle, Lock, LockOpen, Search, MapPin,
@@ -28,7 +28,7 @@ const photosList = ["/images/censored/photo1.jpg", "/images/censored/photo2.jpg"
 
 // ==========================================================
 
-export default function DatingScanner() {
+function DatingScannerContent() {
   const searchParams = useSearchParams()
   const searchQuery = searchParams.get('q')
   const [step, setStep] = useState(1)
@@ -942,5 +942,13 @@ export default function DatingScanner() {
 
       {renderMatchModal()}
     </div>
+  )
+}
+
+export default function DatingScanner() {
+  return (
+    <Suspense fallback={<div className="min-h-screen bg-black text-white flex items-center justify-center p-4"><div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div></div>}>
+      <DatingScannerContent />
+    </Suspense>
   )
 }
