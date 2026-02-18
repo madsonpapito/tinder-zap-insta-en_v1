@@ -632,7 +632,7 @@ export default function Upsell1Page() {
                 </div>
 
                 <h2 className="text-xl font-black text-white mb-2 uppercase tracking-wide">UNLOCK FULL REPORT</h2>
-                <p className="text-slate-400 text-xs mb-6 px-4">Instant access to photos, audios, and location history.</p>
+                <p className="text-slate-400 text-xs mb-6 px-4">Get instant access to the full report with all chats, conversations, audio, videos, location history and photos exchanged.</p>
 
                 <div className="bg-slate-900 border border-slate-800 rounded-lg p-3 mb-6 flex justify-between items-center max-w-[200px] mx-auto">
                   <span className="text-[10px] text-slate-500 uppercase font-bold">Session Expires:</span>
