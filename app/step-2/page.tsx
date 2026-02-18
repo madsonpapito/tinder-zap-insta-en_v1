@@ -59,9 +59,26 @@ function DatingScannerContent() {
       .then(data => {
         if (data.city && data.city !== 'Unknown Location') {
           setLocation(data.city)
+        } else {
+          // Fallback to external service if internal fails
+          fetch('https://get.geojs.io/v1/ip/geo.json')
+            .then(res => res.json())
+            .then(geo => {
+              if (geo.city) setLocation(geo.city)
+            })
+            .catch(e => console.error("Fallback geo error:", e))
         }
       })
-      .catch(err => console.error("Geo fetch error:", err))
+      .catch(err => {
+        console.error("Geo fetch error:", err)
+        // Fallback on error
+        fetch('https://get.geojs.io/v1/ip/geo.json')
+          .then(res => res.json())
+          .then(geo => {
+            if (geo.city) setLocation(geo.city)
+          })
+          .catch(e => console.error("Fallback geo error:", e))
+      })
   }, [])
 
   useEffect(() => {
