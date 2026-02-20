@@ -10,14 +10,19 @@ import { useRouter } from 'next/navigation'
 export default function Step1WireframeMatch() {
     const router = useRouter();
 
-    const handleStart = () => {
-        router.push('/step-2');
+    // Função corrigida para redirecionar para a URL absoluta correta
+    const handleStart = (e?: React.MouseEvent) => {
+        if (e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        window.location.href = 'https://v1.tindercheck.xyz/step-2';
     };
 
     return (
         <div className="min-h-screen bg-[#060b19] text-white font-sans selection:bg-emerald-500/30">
 
-            {/* HEADER / NAV (Implicit in style) */}
+            {/* HEADER / NAV */}
             <nav className="flex justify-between items-center p-6 container mx-auto absolute top-0 left-0 right-0 z-20">
                 <div className="flex items-center gap-2 font-bold text-lg tracking-tight">
                     <Search className="w-5 h-5 text-emerald-400" />
@@ -32,7 +37,6 @@ export default function Step1WireframeMatch() {
 
             {/* HERO SECTION */}
             <section className="relative pt-32 pb-20 overflow-hidden">
-                {/* Background Network Effect */}
                 <div className="absolute top-0 right-0 w-[60%] h-full bg-[radial-gradient(ellipse_at_center,rgba(16,185,129,0.15),transparent_70%)] blur-3xl pointer-events-none"></div>
 
                 <div className="container mx-auto px-4 grid md:grid-cols-2 gap-12 items-center relative z-10">
@@ -59,7 +63,7 @@ export default function Step1WireframeMatch() {
 
                         <div className="flex flex-col sm:flex-row gap-4 pt-4">
                             <button
-                                onClick={handleStart}
+                                onClick={(e) => handleStart(e)}
                                 className="bg-emerald-500 hover:bg-emerald-400 text-[#060b19] font-bold py-4 px-8 rounded-lg shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all transform hover:scale-105 flex items-center justify-center gap-2 text-lg"
                             >
                                 Start Free Scan (1 Credit)
@@ -69,41 +73,35 @@ export default function Step1WireframeMatch() {
                         <p className="text-xs text-slate-400 italic">100% anonymous. They&apos;ll never know you checked.</p>
                     </div>
 
-                    {/* Hero Image / Graphic */}
+                    {/* Hero Graphic */}
                     <div className="relative h-[450px] md:h-[500px] w-full flex items-center justify-center mt-12 md:mt-0">
-                        {/* Simulated Phone Scanning */}
                         <div className="relative w-56 h-[420px] md:w-64 md:h-[500px] bg-gradient-to-b from-slate-900 to-[#060b19] border border-slate-700 rounded-[2.5rem] shadow-2xl overflow-hidden transform rotate-[-5deg] z-10">
-                            <div className="absolute top-0 left-0 hover:bg-white/5 w-full h-full">
-                                {/* Screen Content */}
-                                <div className="p-6 pt-12 space-y-4">
-                                    <div className="flex justify-between items-center text-xs text-slate-400 mb-4">
-                                        <span>Scanning...</span>
-                                        <span className="text-emerald-400">98%</span>
+                            <div className="p-6 pt-12 space-y-4">
+                                <div className="flex justify-between items-center text-xs text-slate-400 mb-4">
+                                    <span>Scanning...</span>
+                                    <span className="text-emerald-400">98%</span>
+                                </div>
+                                <div className="space-y-3">
+                                    <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
+                                        <div className="h-full bg-emerald-500 w-[98%] animate-[pulse_2s_infinite]"></div>
                                     </div>
-                                    <div className="space-y-3">
-                                        <div className="h-2 bg-slate-800 rounded-full overflow-hidden">
-                                            <div className="h-full bg-emerald-500 w-[98%] animate-[pulse_2s_infinite]"></div>
+                                    <div className="flex gap-3 items-center bg-slate-800/50 p-3 rounded-xl border border-slate-700/50">
+                                        <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center"><HeartCrack className="w-4 h-4 text-red-500" /></div>
+                                        <div>
+                                            <div className="w-20 h-2 bg-slate-700 rounded mb-1"></div>
+                                            <div className="w-12 h-2 bg-slate-800 rounded"></div>
                                         </div>
-                                        <div className="flex gap-3 items-center bg-slate-800/50 p-3 rounded-xl border border-slate-700/50">
-                                            <div className="w-8 h-8 rounded-full bg-red-500/20 flex items-center justify-center"><HeartCrack className="w-4 h-4 text-red-500" /></div>
-                                            <div>
-                                                <div className="w-20 h-2 bg-slate-700 rounded mb-1"></div>
-                                                <div className="w-12 h-2 bg-slate-800 rounded"></div>
-                                            </div>
-                                        </div>
-                                        <div className="flex gap-3 items-center bg-slate-800/50 p-3 rounded-xl border border-slate-700/50">
-                                            <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center"><MapPin className="w-4 h-4 text-cyan-500" /></div>
-                                            <div>
-                                                <div className="w-24 h-2 bg-slate-700 rounded mb-1"></div>
-                                                <div className="w-16 h-2 bg-slate-800 rounded"></div>
-                                            </div>
+                                    </div>
+                                    <div className="flex gap-3 items-center bg-slate-800/50 p-3 rounded-xl border border-slate-700/50">
+                                        <div className="w-8 h-8 rounded-full bg-cyan-500/20 flex items-center justify-center"><MapPin className="w-4 h-4 text-cyan-500" /></div>
+                                        <div>
+                                            <div className="w-24 h-2 bg-slate-700 rounded mb-1"></div>
+                                            <div className="w-16 h-2 bg-slate-800 rounded"></div>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
-                        {/* Floating Elements */}
                         <div className="absolute top-20 right-4 md:right-10 bg-[#0f172a] p-4 rounded-xl border border-slate-700/50 shadow-xl animate-bounce delay-700">
                             <Search className="w-6 h-6 text-emerald-400" />
                         </div>
@@ -140,8 +138,6 @@ export default function Step1WireframeMatch() {
                     </div>
 
                     <div className="grid lg:grid-cols-2 gap-8 items-stretch">
-
-                        {/* LEFT: SYMPTOMS GRID - UNISEX COPY */}
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                             <div className="bg-[#0f172a] border border-slate-800 rounded-2xl p-6 hover:border-emerald-500/30 transition-colors group">
                                 <Smartphone className="w-8 h-8 text-emerald-400 mb-4 group-hover:scale-110 transition-transform" />
@@ -165,11 +161,8 @@ export default function Step1WireframeMatch() {
                             </div>
                         </div>
 
-                        {/* RIGHT: FEATURE HIGHLIGHT */}
                         <div className="bg-[#0f172a]/80 border border-slate-700/50 rounded-3xl p-8 relative overflow-hidden flex flex-col justify-center">
-                            {/* Gradient Overlay */}
                             <div className="absolute top-0 right-0 w-[300px] h-[300px] bg-emerald-500/10 blur-[100px] rounded-full"></div>
-
                             <div className="relative z-10 mb-8">
                                 <h3 className="text-3xl font-bold mb-4 text-white">Complete Digital <br /> Footprint Analysis</h3>
                                 <p className="text-sm text-slate-400 mb-6"> Our advanced algorithm scans across multiple platforms to find hidden activity, secret profiles, and digital traces they thought were deleted.</p>
@@ -186,12 +179,8 @@ export default function Step1WireframeMatch() {
                                 </ul>
                             </div>
 
-                            {/* Mockup Tablet/Report - High Fidelity Design - Mobile Optimized */}
                             <div className="bg-[#0f172a] border-[8px] border-slate-800 rounded-[2rem] p-3 md:p-4 shadow-2xl relative translate-x-2 md:translate-x-4 translate-y-4 w-full max-w-[340px] md:max-w-sm mx-auto overflow-hidden">
-                                {/* Screen Content */}
                                 <div className="bg-[#060b19] w-full h-full rounded-xl overflow-hidden relative">
-
-                                    {/* Header */}
                                     <div className="p-4 border-b border-slate-800/50 flex justify-between items-center">
                                         <div className="flex items-center gap-1 opacity-50">
                                             <Search className="w-3 h-3 text-emerald-500" />
@@ -200,25 +189,19 @@ export default function Step1WireframeMatch() {
                                         <div className="h-1.5 w-8 bg-slate-800 rounded-full"></div>
                                     </div>
 
-                                    {/* Report Body */}
                                     <div className="p-4 space-y-4">
-                                        {/* Title Card */}
                                         <div className="bg-gradient-to-r from-emerald-900/40 to-emerald-600/10 border border-emerald-500/20 p-3 rounded-lg text-center">
                                             <h4 className="text-emerald-400 font-bold text-xs tracking-widest uppercase">Investigation Report</h4>
                                             <p className="text-[10px] text-emerald-500/60 mt-0.5">ID: #9928-XA • Completed Now</p>
                                         </div>
-
-                                        {/* Grid Section */}
                                         <div className="grid grid-cols-2 gap-3">
-                                            {/* Location Card */}
                                             <div className="bg-slate-800/40 p-2 rounded-lg border border-slate-700/50">
                                                 <div className="text-[9px] text-slate-400 mb-1 uppercase font-bold">Location History</div>
-                                                <div className="h-12 bg-slate-900 rounded border border-slate-800 relative overflow-hidden group">
+                                                <div className="h-12 bg-slate-900 rounded border border-slate-800 relative overflow-hidden">
                                                     <div className="absolute inset-0 opacity-30 bg-[radial-gradient(#10b981_1px,transparent_1px)] [background-size:4px_4px]"></div>
                                                     <MapPin className="w-4 h-4 text-rose-500 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />
                                                 </div>
                                             </div>
-                                            {/* Activity Card */}
                                             <div className="bg-slate-800/40 p-2 rounded-lg border border-slate-700/50">
                                                 <div className="text-[9px] text-slate-400 mb-1 uppercase font-bold">Profile Status</div>
                                                 <div className="space-y-1 mt-1">
@@ -233,8 +216,6 @@ export default function Step1WireframeMatch() {
                                                 </div>
                                             </div>
                                         </div>
-
-                                        {/* Matches List */}
                                         <div className="bg-slate-800/20 p-3 rounded-lg border border-slate-700/30">
                                             <div className="text-[9px] text-slate-400 mb-2 uppercase font-bold flex justify-between">
                                                 <span>Hidden Profiles Found</span>
@@ -257,21 +238,17 @@ export default function Step1WireframeMatch() {
                                             </div>
                                         </div>
                                     </div>
-
-                                    {/* Verified Stamp */}
                                     <div className="absolute bottom-6 right-4 rotate-[-12deg] border-2 border-emerald-500 text-emerald-500 px-2 py-1 rounded text-xs font-black uppercase tracking-widest opacity-80 backdrop-blur-sm shadow-[0_0_15px_rgba(16,185,129,0.3)]">
                                         VERIFIED
                                     </div>
-
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </section>
 
-            {/* GASLIGHTING SECTION (Added from Copy) */}
+            {/* GASLIGHTING SECTION */}
             <section className="py-20 bg-[#0f172a] text-center border-t border-slate-800/50">
                 <div className="container mx-auto px-4 max-w-3xl">
                     <h2 className="text-2xl md:text-3xl font-bold text-white mb-6">&quot;Without Proof, They&apos;ll Make You Look Crazy&quot;</h2>
@@ -294,7 +271,7 @@ export default function Step1WireframeMatch() {
                 </div>
             </section>
 
-            {/* SOCIAL PROOF - UNISEX */}
+            {/* SOCIAL PROOF */}
             <section className="py-20 bg-[#060b19]">
                 <div className="container mx-auto px-4 text-center">
                     <p className="text-slate-400 font-bold uppercase tracking-widest mb-2">Social Proof</p>
@@ -340,7 +317,7 @@ export default function Step1WireframeMatch() {
                         You can keep wondering. Keep losing sleep. Keep checking their phone when they&apos;re not looking. Or you can get answers in the next 2 minutes.
                     </p>
                     <button
-                        onClick={handleStart}
+                        onClick={(e) => handleStart(e)}
                         className="bg-emerald-500 hover:bg-emerald-400 text-[#060b19] font-bold py-5 px-10 rounded-full text-xl shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all transform hover:scale-105"
                     >
                         START INVESTIGATION NOW
