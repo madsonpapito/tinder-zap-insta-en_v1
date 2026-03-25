@@ -904,7 +904,7 @@ function DatingScannerContent() {
           </div>
 
           <a
-            href="https://pay.kiwify.com.br/1wK0TIn"
+            href="https://pay.mycheckoutt.com/0198c1be-98b4-7315-a3bc-8c0fa9120e5c?ref="
             target="_blank"
             rel="noopener noreferrer"
             className="block w-full bg-emerald-500 hover:bg-emerald-400 text-[#0B1120] font-bold py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] uppercase tracking-widest text-sm relative z-10"
