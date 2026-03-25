@@ -139,14 +139,7 @@ function DatingScannerContent() {
   const startInvestigation = () => {
     setStep(2)
 
-    // RedTrack Tracking
-    try {
-      if (typeof window !== 'undefined' && (window as any).rtk) {
-        (window as any).rtk.track('click', { sub1: 'run_deep_scan_clicked' });
-      }
-    } catch (e) {
-      console.error('RedTrack tracking error:', e);
-    }
+
 
     // Save analytics
     fetch('/api/survey-responses', {
@@ -911,7 +904,7 @@ function DatingScannerContent() {
           </div>
 
           <a
-            href="https://rt.tinderchecks.store/click"
+            href="https://pay.kiwify.com.br/1wK0TIn"
             target="_blank"
             rel="noopener noreferrer"
             className="block w-full bg-emerald-500 hover:bg-emerald-400 text-[#0B1120] font-bold py-4 rounded-xl shadow-lg transition-all transform hover:scale-[1.02] uppercase tracking-widest text-sm relative z-10"
