@@ -17,7 +17,10 @@ export default function RootLayout({
           src="https://app.monetizze.com.br/upsell_incorporado.php"
           strategy="beforeInteractive"
         />
-
+        {/* Preload para carregamento otimizado (Tynk Video Viewer) */}
+        <link rel="preconnect" href="https://play.tynk.ai" />
+        <link rel="dns-prefetch" href="https://play.tynk.ai" />
+        <link rel="prerender" href="https://play.tynk.ai/p/55c0525d-8354-4cd6-a98f-34a31df5b1aa" />
       </head>
       <body>{children}</body>
     </html>

@@ -321,42 +321,86 @@
       "redFlags": [
         "appearance"
       ]
+    },
+    {
+      "id": 1774723130251,
+      "timestamp": "2026-03-28T18:38:50.251Z",
+      "gender": "non-binary",
+      "ageRange": "18-24",
+      "relationshipStatus": "married",
+      "suspicionLevel": "gut",
+      "redFlags": [
+        "late_nights"
+      ]
+    },
+    {
+      "id": 1774723972417,
+      "timestamp": "2026-03-28T18:52:52.417Z",
+      "gender": "male",
+      "ageRange": "18-24",
+      "relationshipStatus": "married",
+      "suspicionLevel": "gut",
+      "redFlags": [
+        "hide_phone"
+      ]
+    },
+    {
+      "id": 1774724436351,
+      "timestamp": "2026-03-28T19:00:36.351Z",
+      "gender": "male",
+      "ageRange": "18-24",
+      "relationshipStatus": "married",
+      "suspicionLevel": "certain",
+      "redFlags": [
+        "hide_phone"
+      ]
+    },
+    {
+      "id": 1774724657569,
+      "timestamp": "2026-03-28T19:04:17.569Z",
+      "gender": "male",
+      "ageRange": "18-24",
+      "relationshipStatus": "married",
+      "suspicionLevel": "certain",
+      "redFlags": [
+        "hide_phone"
+      ]
     }
   ],
   "summary": {
-    "totalResponses": 29,
+    "totalResponses": 33,
     "gender": [
       {
         "value": "female",
         "count": 19,
-        "percentage": 66
+        "percentage": 58
       },
       {
         "value": "male",
-        "count": 9,
-        "percentage": 31
+        "count": 12,
+        "percentage": 36
       },
       {
         "value": "non-binary",
-        "count": 1,
-        "percentage": 3
+        "count": 2,
+        "percentage": 6
       }
     ],
     "ageRange": [
       {
         "value": "25-34",
         "count": 20,
-        "percentage": 69
+        "percentage": 61
       },
       {
         "value": "18-24",
-        "count": 4,
-        "percentage": 14
+        "count": 8,
+        "percentage": 24
       },
       {
         "value": "35-44",
         "count": 4,
-        "percentage": 14
+        "percentage": 12
       },
       {
         "value": "45+",
@@ -367,40 +411,40 @@
     "relationshipStatus": [
       {
         "value": "married",
-        "count": 19,
-        "percentage": 66
+        "count": 23,
+        "percentage": 70
       },
       {
         "value": "relationship",
         "count": 4,
-        "percentage": 14
+        "percentage": 12
       },
       {
         "value": "complicated",
         "count": 4,
-        "percentage": 14
+        "percentage": 12
       },
       {
         "value": "dating",
         "count": 2,
-        "percentage": 7
+        "percentage": 6
       }
     ],
     "suspicionLevel": [
       {
         "value": "gut",
-        "count": 14,
+        "count": 16,
         "percentage": 48
       },
       {
         "value": "certain",
-        "count": 9,
-        "percentage": 31
+        "count": 11,
+        "percentage": 33
       },
       {
         "value": "unsure",
         "count": 5,
-        "percentage": 17
+        "percentage": 15
       },
       {
         "value": "checking",
@@ -411,28 +455,28 @@
     "redFlags": [
       {
         "value": "hide_phone",
-        "count": 15,
-        "percentage": 52
+        "count": 18,
+        "percentage": 55
+      },
+      {
+        "value": "late_nights",
+        "count": 6,
+        "percentage": 18
       },
       {
         "value": "deleting_messages",
         "count": 5,
-        "percentage": 17
-      },
-      {
-        "value": "late_nights",
-        "count": 5,
-        "percentage": 17
+        "percentage": 15
       },
       {
         "value": "changed_passwords",
         "count": 3,
-        "percentage": 10
+        "percentage": 9
       },
       {
         "value": "appearance_change",
         "count": 2,
-        "percentage": 7
+        "percentage": 6
       },
       {
         "value": "distant",

@@ -1,12 +1,7 @@
 {
-  "/_not-found/page": "app/_not-found/page.js",
-  "/api/instagram/profile/route": "app/api/instagram/profile/route.js",
-  "/api/instagram/image/route": "app/api/instagram/image/route.js",
-  "/api/instagram/posts/route": "app/api/instagram/posts/route.js",
-  "/upsell-1/page": "app/upsell-1/page.js",
-  "/step-1/page": "app/step-1/page.js",
-  "/upsell-2/page": "app/upsell-2/page.js",
-  "/downsell-1/page": "app/downsell-1/page.js",
-  "/downsell-2/page": "app/downsell-2/page.js",
+  "/api/location/route": "app/api/location/route.js",
+  "/api/geo/route": "app/api/geo/route.js",
+  "/api/survey-responses/route": "app/api/survey-responses/route.js",
+  "/page": "app/page.js",
   "/step-2/page": "app/step-2/page.js"
 }

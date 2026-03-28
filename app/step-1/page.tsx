@@ -43,18 +43,18 @@ export default function Step1WireframeMatch() {
                         </div>
 
                         <h1 className="text-4xl md:text-6xl font-extrabold leading-[1.1] tracking-tight">
-                            YOU&apos;RE NOT PARANOID — <br />
-                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">YOU&apos;RE INVESTIGATING</span>
+                            ARE THEY <span className="text-transparent bg-clip-text bg-gradient-to-r from-rose-500 to-pink-500">CHEATING</span> ON <br />
+                            <span className="text-transparent bg-clip-text bg-gradient-to-r from-emerald-400 to-cyan-400">SOCIAL MEDIA?</span>
                         </h1>
 
                         <p className="text-slate-400 text-lg leading-relaxed max-w-md">
-                            That gut feeling? It exists for a reason. Every minute you wait is another minute of doubt eating away at your peace.
+                            They think they deleted the conversations. <strong className="text-white">They are wrong.</strong> See who they are really messaging right now in under 2 minutes.
                         </p>
 
                         <ul className="space-y-2 text-sm text-slate-300">
-                            <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Scan their digital footprint.</li>
-                            <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Find hidden dating profiles.</li>
-                            <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Get the truth in under 2 minutes.</li>
+                            <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Recover "deleted" messages.</li>
+                            <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Discover hidden photos & folders.</li>
+                            <li className="flex items-center gap-2"><CheckCircle2 className="w-4 h-4 text-emerald-500" /> Track suspicious likes & interactions.</li>
                         </ul>
 
                         <div className="flex flex-col sm:flex-row gap-4 pt-4">
@@ -62,7 +62,7 @@ export default function Step1WireframeMatch() {
                                 onClick={handleStart}
                                 className="bg-emerald-500 hover:bg-emerald-400 text-[#060b19] font-bold py-4 px-8 rounded-lg shadow-[0_0_20px_rgba(16,185,129,0.4)] transition-all transform hover:scale-105 flex items-center justify-center gap-2 text-lg"
                             >
-                                Start Free Scan (1 Credit)
+                                <Search className="w-5 h-5"/> SCAN SOCIAL MEDIA NOW
                             </button>
                             <p className="text-xs text-slate-400 mt-2 sm:hidden text-center">No credit card required for scan.</p>
                         </div>
@@ -335,15 +335,15 @@ export default function Step1WireframeMatch() {
             {/* CALL TO ACTION */}
             <section className="py-20 bg-[#0f172a] border-t border-slate-800">
                 <div className="container mx-auto px-4 text-center max-w-2xl">
-                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">The Doubt Won&apos;t Go Away <br /> Until You Know</h2>
+                    <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">You Won&apos;t Live Another Day <br /> With This Anguish</h2>
                     <p className="text-slate-400 text-lg mb-8">
-                        You can keep wondering. Keep losing sleep. Keep checking their phone when they&apos;re not looking. Or you can get answers in the next 2 minutes.
+                        You can keep wondering. Keep losing sleep. Or you can get the proof you need right now, 100% anonymously.
                     </p>
                     <button
                         onClick={handleStart}
-                        className="bg-emerald-500 hover:bg-emerald-400 text-[#060b19] font-bold py-5 px-10 rounded-full text-xl shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all transform hover:scale-105"
+                        className="bg-emerald-500 hover:bg-emerald-400 text-[#060b19] font-bold py-5 px-10 rounded-full text-xl shadow-[0_0_30px_rgba(16,185,129,0.5)] transition-all transform hover:scale-105 flex items-center justify-center gap-2 mx-auto"
                     >
-                        START INVESTIGATION NOW
+                        <Lock className="w-6 h-6"/> SCAN SOCIAL ACTIVITY NOW
                     </button>
                     <div className="mt-6 flex flex-col md:flex-row justify-center gap-4 text-xs text-slate-400">
                         <span className="flex items-center gap-1 justify-center"><Lock className="w-3 h-3" /> 100% Anonymous</span>

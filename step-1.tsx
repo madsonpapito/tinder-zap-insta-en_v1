@@ -42,15 +42,15 @@ export default function Step1() {
           </div>
 
           <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
-            Are you feeling that something <span className="text-red-500">isn't right</span> <span className="text-red-500"></span>in your relationship?<br />
+            Are they <span className="text-red-500">cheating</span> on Social Media?<br />
           </h1>
 
           <p className="text-lg text-gray-300 mb-8 max-w-xl">
-            With every passing minute, your worst fears may be coming true.
+            They think they deleted the conversations. They are wrong.
           </p>
 
           <p className="text-lg text-white font-bold mb-8 max-w-xl">
-            Find out the truth in under 2 minutes.
+            See who they are really messaging right now in under 2 minutes.
           </p>
 
           <div className="inline-flex items-center bg-green-900/50 text-green-300 border border-green-700 rounded-full px-4 py-1.5 text-sm mb-8">
@@ -100,7 +100,7 @@ export default function Step1() {
             onClick={handleNavigate}
             className="w-full max-w-lg bg-gradient-to-r from-red-500 to-pink-600 hover:opacity-90 text-white font-bold py-4 px-6 rounded-full text-lg shadow-lg transition-transform transform hover:scale-105"
           >
-            🔍 DISCOVER THE TRUTH NOW
+            🔍 SCAN SOCIAL MEDIA NOW
           </button>
           <p className="text-xs text-gray-400 mt-2">100% anonymous investigation. They'll never know you checked.</p>
         </div>
@@ -231,7 +231,7 @@ export default function Step1() {
             onClick={handleNavigate}
             className="w-full max-w-lg bg-[#FF4081] hover:bg-[#f53677] text-white font-extrabold py-5 px-6 rounded-full text-lg md:text-xl shadow-[0_10px_40px_-10px_rgba(255,64,129,0.6)] transition-all transform hover:scale-105 flex items-center justify-center gap-3 mx-auto"
           >
-            <span className="text-2xl">🔒</span> START ANONYMOUS INVESTIGATION NOW
+            <span className="text-2xl">🔒</span> SCAN SOCIAL ACTIVITY NOW
           </button>
 
           {/* Textos de Rodapé */}
